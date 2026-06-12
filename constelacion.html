@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  color: white;
+  background-color: black;
+  overflow: hidden;
+}
+
+/* Canvas de fondo: cubre toda la pantalla, detrás de todo */
+#starCanvasBg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;       /* queda detrás de todo el contenido */
+  display: block;
+  background: #00000a;
+}
+
+/* ── BOTÓN MÚSICA ── */
+.music-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 50;
+}
+
+.music-btn i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.music-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (min-width: 600px) {
+  .music-btn {
+    top: 20px;
+    right: 24px;
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+
+  .music-btn i {
+    font-size: 20px;
+  }
+}
+
+/* ── CONTENEDOR PRINCIPAL ── */
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── ENCABEZADO ── */
+.header {
+  text-align: center;
+  padding-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 600px) {
+  .header {
+    padding-top: 22px;
+    gap: 8px;
+  }
+}
+
+.title {
+  font-family: "Dancing Script", cursive;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+@media (min-width: 600px) {
+  .title {
+    font-size: 2.8rem;
+  }
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.45;
+}
+
+@media (min-width: 600px) {
+  .subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: normal;
+  }
+}
+
+/* ── CONSTELACIÓN ── */
+.constellation {
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+
+/* ── CANVAS ── */
+#starCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── ÍCONOS DE ESTRELLAS ── */
+.star-icon {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  cursor: pointer;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.star-icon:hover {
+  transform: translate(-50%, -50%) scale(1.4);
+  filter: drop-shadow(0 0 10px rgba(255, 200, 255, 0.9));
+}
+
+/* ── HINT ── */
+.hint {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+@media (min-width: 600px) {
+  .hint {
+    bottom: 24px;
+    left: 24px;
+    transform: none;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 10px 18px;
+  }
+}
+
+/* ── MODAL ────────────────────────────────────────────────────── */
+
+/* Mobile: centrada en pantalla */
+.star-modal {
+  position: fixed;
+  top: 50%;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  transform: translateY(-50%);
+
+  /* Fondo: negro espacial con tinte azul-morado muy oscuro */
+  background: rgba(6, 4, 20, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  /* Borde con brillo sutil tipo nebulosa */
+  border: 1px solid rgba(160, 120, 255, 0.25);
+  border-radius: 18px;
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 100;
+
+  /* Sombra exterior con tinte morado, como si irradiara luz */
+  box-shadow:
+    0 0 0 1px rgba(100, 60, 200, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 60px rgba(120, 80, 220, 0.08);
+
+  /* Animación de entrada */
+  animation: modalIn 0.25s ease-out;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(calc(-50% + 10px)); }
+  to   { opacity: 1; transform: translateY(-50%); }
+}
+
+/* Desktop: esquina inferior derecha */
+@media (min-width: 600px) {
+  .star-modal {
+    top: auto;
+    bottom: 24px;
+    left: auto;
+    right: 24px;
+    width: 290px;
+    transform: none;
+    padding: 20px;
+    gap: 14px;
+    animation: modalInDesktop 0.25s ease-out;
+  }
+
+  @keyframes modalInDesktop {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ── Botón cerrar ── */
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+/* ── Header: icono + título ── */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 28px;
+}
+
+.modal-star-icon {
+  color: #c084fc;
+  font-size: 1rem;
+  filter: drop-shadow(0 0 4px rgba(192, 132, 252, 0.6));
+}
+
+.modal-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.01em;
+}
+
+/* ── Imagen ── */
+.modal-img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+
+ 
+  border: 1px solid rgba(160, 120, 255, 0.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 600px) {
+  .modal-img {
+    height: 150px;
+  }
+}
+
+/* ── Descripción ── */
+.modal-desc {
+  font-size: 0.8rem;
+  color: rgba(210, 195, 255, 0.75); 
+  line-height: 1.6;
+}
+
+@media (min-width: 600px) {
+  .modal-desc {
+    font-size: 0.875rem;
+  }
+}
+
+/* ── Fecha ── */
+.modal-date {
+  font-size: 0.72rem;
+  color: rgba(160, 130, 220, 0.45);
+  letter-spacing: 0.03em;
+  font-style: italic;
+}
+
+@media (min-width: 600px) {
+  .modal-date {
+    font-size: 0.78rem;
+  }
+}
+
+.star-icon {
+  font-size: 14px; 
+  animation: starPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes starPulse {
+  0%, 100% {
+    text-shadow: 0 0 6px #fff, 0 0 14px #fff, 0 0 28px rgba(200, 220, 255, 0.6);
+    filter: brightness(1);
+  }
+  50% {
+    text-shadow: 0 0 10px #fff, 0 0 24px #fff, 0 0 48px rgba(180, 210, 255, 0.9);
+    filter: brightness(1.4);
+  }
+
+}
+
+.btnSiguiente{
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+
+  padding: 12px 20px;
+  border-radius: 15px;
+  border: none;
+
+  background: #d88cff;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.btnSiguiente:hover{
+  transform: translateY(-2px);
+}
+    </style>
+</head>
+<body>
+
+ <title>Nuestra Constelación</title>
+
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.9.1/fonts/remixicon.min.css"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="constelacion.css" />
+
+    <script src="starcanvasbg.js" defer></script>
+
+    <script src="constelacion.js" defer></script>
+  </head>
+
+  <body>
+    <!-- Canvas fijo como fondo de pantalla completa -->
+    <canvas id="starCanvasBg"></canvas>
+
+
+
+    <main class="container">
+      <!-- Encabezado centrado -->
+      <header class="header">
+        <h1 class="title">Nuestra Constelación</h1>
+        <p class="subtitle">
+          Cada estrella, un recuerdo. Cada conexión, nuestro amor.
+        </p>
+      </header>
+
+      <!-- Zona de constelación -->
+      <div class="constellation">
+        <canvas id="starCanvas"></canvas>
+      </div>
+    </main>
+
+    <!-- Hint: esquina inferior izquierda -->
+    <p class="hint">
+      <i class="ri-cursor-hand"></i>
+      <span>Haz click en una estrella para ver nuestro recuerdo.</span>
+    </p>
+    <audio id="musicaFondo" autoplay loop>
+
+      <source src="audio/vivo.mp3" type="audio/mpeg">
+
+    </audio>
+
+    <a href="todo.html" class="btnSiguiente">
+  Ver la sorpresa ✨
+</a></section>
+
+    <script>
+
+        const canvas = document.getElementById("starCanvas");
+const ctx = canvas.getContext("2d");
+
+// ── DATOS (solo info, sin posición) ────────────────────
+const starData = [
+  // 0
+  {
+    label: "La primera vez que hablamos",
+    date: "14 Febrero 2025",
+    description: "jiji todavia recuerdo el que te quiera conquitar la tiene dificil.",
+    image: "imagenes/ima1.jpg.jpg",
+  },
+  // 1
+  {
+    label: "La primera vez que nos conociamos",
+    date: "16 Mayo 2025",
+    description: "Despues de vernos ahí senti que te conocia desde antes.",
+    image: "recuerdo2.jpg",
+  },
+  // 2
+  {
+    label: "Las primeras conversaciones largas",
+    date: "23 Mayo 2025",
+    description: "Horas hablando y aún así no era suficiente.",
+    image: "recuerdo3.jpg",
+  },
+  // 3
+  {
+    label: "El inicio de algo bonito",
+    date: "21 Junio 2025",
+    description: "Sin darnos cuenta, ya éramos importantes.",
+    image: "recuerdo4.jpg",
+  },
+  // 4
+  {
+    label: "Nuestra primera cita",
+    date: "27 de Junio 2025",
+    description: "Los nervios, las miradas, todo valió la pena.",
+    image: "recuerdo5.jpg",
+  },
+  // 5
+  {
+    label: "Ese día especial",
+    date: "Julio 2025",
+    description: "El momento en que todo se sintió diferente.",
+    image: "recuerdo6.jpg",
+  },
+  // 6
+  {
+    label: "Las primeras salidas",
+    date: "Agosto 2025",
+    description: "Cada momento contigo era único.",
+    image: "recuerdo8.jpg",
+  },
+  // 7
+  {
+    label: "Los pequeños detalles",
+    date: "Septiembre 2025",
+    description: "Ahí entendí que el amor está en lo simple.",
+    image: "recuerdo9.jpg",
+  },
+  // 8
+  {
+    label: "Momentos inolvidables",
+    date: "Septiembre 2025",
+    description: "Cada día contigo sumaba algo hermoso.",
+    image: "recuerdo10.jpg",
+  },
+  // 9
+  {
+    label: "Nuestro primer viaje",
+    date: "Octubre 2025",
+    description: "Descubriendo lugares… y más de nosotros.",
+    image: "recuerdo11.jpg",
+  },
+  // 10
+  {
+    label: "Ese abrazo especial",
+    date: "Noviembre 2025",
+    description: "Sentí que ahí era donde pertenecía.",
+    image: "recuerdo12.jpg",
+  },
+  // 11
+  {
+    label: "Las risas sin control",
+    date: "Noviembre 2025",
+    description: "Contigo todo es más divertido.",
+    image: "recuerdo13.jpg",
+  },
+  // 12
+  {
+    label: "Momentos simples",
+    date: "Diciembre 2025",
+    description: "Pero contigo, todo se siente grande.",
+    image: "recuerdo14.jpg",
+  },
+  // 13
+  {
+    label: "Miradas que dicen todo",
+    date: "Diciembre 2025",
+    description: "A veces no hacen falta palabras.",
+    image: "recuerdo15.jpg",
+  },
+  // 14
+  {
+    label: "Días difíciles",
+    date: "Enero 2026",
+    description: "Pero siempre juntos, siempre fuertes.",
+    image: "recuerdo16.jpg",
+  },
+  // 15
+  {
+    label: "Apoyándonos",
+    date: "Febrero 2026",
+    description: "Nunca soltándonos, pase lo que pase.",
+    image: "recuerdo17.jpg",
+  },
+  // 16
+  {
+    label: "Creciendo juntos",
+    date: "2026",
+    description: "Aprendiendo uno del otro cada día.",
+    image: "recuerdo18.jpg",
+  },
+  // 17
+  {
+    label: "Sueños compartidos",
+    date: "2026",
+    description: "Pensando en todo lo que vendrá.",
+    image: "recuerdo19.jpg",
+  },
+  // 18
+  {
+    label: "Nuestro camino",
+    date: "2026",
+    description: "Construyendo algo real y bonito.",
+    image: "recuerdo20.jpg",
+  },
+  // 19
+  {
+    label: "Tu sonrisa",
+    date: "Siempre",
+    description: "Lo que ilumina incluso mis días grises.",
+    image: "recuerdo21.jpg",
+  },
+  // 20
+  {
+    label: "Tu mirada",
+    date: "Siempre",
+    description: "Donde me pierdo y me encuentro.",
+    image: "recuerdo22.jpg",
+  },
+  // 21
+  {
+    label: "Tu forma de ser",
+    date: "Siempre",
+    description: "Eso que te hace única.",
+    image: "recuerdo23.jpg",
+  },
+  // 22
+  {
+    label: "Todo lo que eres",
+    date: "Siempre",
+    description: "Y todo lo que amo de ti.",
+    image: "recuerdo24.jpg",
+  },
+  // 23
+  {
+    label: "Lo que hemos construido",
+    date: "Hoy",
+    description: "Cada recuerdo forma este amor.",
+    image: "recuerdo25.jpg",
+  },
+  // 24
+  {
+    label: "Te amo",
+    date: "Siempre",
+    description: "Y esto es solo el comienzo.",
+    image: "recuerdo26.jpg",
+  },
+  // 25
+  {
+    label: "Un día cualquiera contigo",
+    date: "2023",
+    description: "Incluso lo simple se vuelve especial si es contigo.",
+    image: "recuerdo25.jpg",
+  },
+  // 26
+  {
+    label: "Tus mensajes",
+    date: "Siempre",
+    description: "Siempre logran sacarme una sonrisa.",
+    image: "recuerdo26.jpg",
+  },
+  // 27
+  {
+    label: "Cuando te extraño",
+    date: "Siempre",
+    description: "Porque incluso en la distancia estás presente.",
+    image: "recuerdo27.jpg",
+  },
+  // 28
+  {
+    label: "Nuestros silencios",
+    date: "Siempre",
+    description: "Porque incluso sin hablar, todo se siente bien.",
+    image: "recuerdo28.jpg",
+  },
+  // 29
+  {
+    label: "Tu compañía",
+    date: "Siempre",
+    description: "Es mi lugar favorito en el mundo.",
+    image: "recuerdo29.jpg",
+  },
+  // 30
+  {
+    label: "Pequeños momentos",
+    date: "Siempre",
+    description: "Que terminan siendo los más grandes.",
+    image: "recuerdo30.jpg",
+  },
+  // 31
+  {
+    label: "Cuando pienso en ti",
+    date: "Siempre",
+    description: "Es inevitable sonreír sin razón.",
+    image: "recuerdo31.jpg",
+  },
+  // 32
+  {
+    label: "Nuestro presente",
+    date: "Hoy",
+    description: "Donde todo lo vivido cobra sentido.",
+    image: "recuerdo32.jpg",
+  },
+  // 33
+  {
+    label: "Lo que viene",
+    date: "Futuro",
+    description: "Todo lo que aún nos falta por vivir juntos.",
+    image: "recuerdo33.jpg",
+  },
+  // 34
+  {
+    label: "Cada día contigo",
+    date: "Siempre",
+    description: "Es una nueva razón para agradecer.",
+    image: "recuerdo34.jpg",
+  },
+  // 35
+  {
+    label: "Nuestro amor",
+    date: "Siempre",
+    description: "No perfecto, pero real y fuerte.",
+    image: "recuerdo35.jpg",
+  },
+  // 36
+  {
+    label: "Para siempre",
+    date: "∞",
+    description: "Porque esto no tiene final.",
+    image: "recuerdo36.jpg",
+  },
+];
+
+// ── LAYOUT DESKTOP — T E  A M O (horizontal) ──────────
+const layoutDesktop = [
+  // ── T mayúscula ──────────────────────────────────
+  { x: 7.0, y: 28.0, connections: [1] },
+  { x: 11.5, y: 27.5, connections: [2, 3] },
+  { x: 16.0, y: 28.0, connections: [] },
+  { x: 11.8, y: 46.0, connections: [4] },
+  { x: 13.5, y: 57.0, connections: [] },
+
+  // ── e minúscula ─────────────────────────────────
+  { x: 20.5, y: 50.0, connections: [10, 11] },
+  { x: 19.5, y: 45.0, connections: [5] },
+  { x: 21.5, y: 39.0, connections: [6] },
+  { x: 24.5, y: 37.0, connections: [7] },
+  { x: 26.5, y: 41.0, connections: [8] },
+  { x: 23.5, y: 47.0, connections: [9] },
+  { x: 22, y: 55.0, connections: [] },
+  { x: 25, y: 55.0, connections: [11] },
+  { x: 27.5, y: 50.0, connections: [12] },
+
+  // ── a minúscula ────────────────────────────────
+  { x: 42.5, y: 36.0, connections: [15] }, //1
+  { x: 47.0, y: 30.0, connections: [16] }, //2
+  { x: 51.0, y: 36.0, connections: [17] }, //3
+  { x: 50.5, y: 42.0, connections: [18] }, //4
+  { x: 50.0, y: 54.0, connections: [19, 20] }, //5
+  { x: 51.5, y: 56.5, connections: [] }, //6
+  { x: 46.0, y: 56.0, connections: [21] }, //7
+  { x: 43.0, y: 49.0, connections: [22] }, //8
+  { x: 46.0, y: 42.0, connections: [17] }, //9
+
+  // ── m minúscula ────────────────────────────────
+  { x: 55.0, y: 33.0, connections: [24, 25] },
+  { x: 55.2, y: 49.0, connections: [] },
+  { x: 59.5, y: 30.5, connections: [26] },
+  { x: 63.0, y: 34.5, connections: [27, 28] },
+  { x: 63.2, y: 49.5, connections: [] },
+  { x: 67.0, y: 30.0, connections: [29] },
+  { x: 70.5, y: 35.0, connections: [30] },
+  { x: 70.8, y: 49.5, connections: [] },
+
+  // ── o minúscula ────────────────────────────────
+  { x: 77.0, y: 31.5, connections: [32, 36] },
+  { x: 82.0, y: 28.5, connections: [33] },
+  { x: 85.5, y: 36.0, connections: [34] },
+  { x: 84.5, y: 47.5, connections: [35] },
+  { x: 79.5, y: 52.0, connections: [36] },
+  { x: 75.5, y: 44.5, connections: [] },
+];
+
+// ── LAYOUT MÓVIL — TE (arriba) / AMO (abajo) ──────────
+const layoutMobile = [
+  // ── T (0-4) — fila 1 izquierda
+  { x: 8, y: 10, connections: [1] },
+  { x: 18, y: 9.5, connections: [2, 3] },
+  { x: 28, y: 10, connections: [] },
+  { x: 18, y: 22, connections: [4] },
+  { x: 22, y: 30, connections: [] },
+
+  // ── e (5-13) — fila 1 derecha
+  { x: 38, y: 28, connections: [10, 11] }, //1
+  { x: 36, y: 24, connections: [5] }, //2
+  { x: 38, y: 20, connections: [6] }, //3
+  { x: 51, y: 18, connections: [7] }, //4
+  { x: 56.5, y: 22, connections: [8] }, //5
+  { x: 49, y: 26, connections: [9] }, //6
+  { x: 40, y: 32, connections: [] }, //7
+  { x: 52, y: 32, connections: [11] }, //8
+  { x: 60, y: 28, connections: [12] }, //9
+
+  // ── a (14-22) — fila 2 izquierda
+  { x: 17, y: 50, connections: [15] },
+  { x: 23, y: 48, connections: [16] },
+  { x: 29, y: 52, connections: [17] },
+  { x: 28, y: 58, connections: [18] },
+  { x: 27, y: 65, connections: [19, 20] },
+  { x: 31, y: 68, connections: [] },
+  { x: 20, y: 70, connections: [21] },
+  { x: 13, y: 66, connections: [22] },
+  { x: 15, y: 58, connections: [17] },
+  //48 - 65
+
+  // ── m (23-30) — fila 2 centro
+  { x: 43, y: 50, connections: [24, 25] },
+  { x: 43, y: 65, connections: [] },
+  { x: 48, y: 48, connections: [26] },
+  { x: 53, y: 52, connections: [27, 28] },
+  { x: 53, y: 65, connections: [] },
+  { x: 58, y: 48, connections: [29] },
+  { x: 63, y: 52, connections: [30] },
+  { x: 63, y: 65, connections: [] },
+
+  // ── o (31-36) — fila 2 derecha
+  { x: 74, y: 50, connections: [32, 36] },
+  { x: 83, y: 47, connections: [33] },
+  { x: 90, y: 52, connections: [34] },
+  { x: 89, y: 62, connections: [35] },
+  { x: 81, y: 64, connections: [36] },
+  { x: 73, y: 59, connections: [] },
+];
+
+// ── MERGE posición + datos ──────────────────────────────
+function getStars() {
+  const isMobile = window.innerWidth < 768;
+  const layout = isMobile ? layoutMobile : layoutDesktop;
+  return layout.map((pos, i) => ({ ...pos, ...starData[i] }));
+}
+
+// ── TAMAÑO DEL CANVAS ──────────────────────────────────
+function resize() {
+  const parent = canvas.parentElement;
+  canvas.width = parent.offsetWidth;
+  canvas.height = parent.offsetHeight;
+  draw();
+}
+
+// ── HELPER: % a px ─────────────────────────────────────
+function toPixel(star) {
+  return {
+    px: (star.x / 100) * canvas.width,
+    py: (star.y / 100) * canvas.height,
+  };
+}
+
+// ── ÍCONOS DE ESTRELLAS ────────────────────────────────
+function renderStarIcons(stars) {
+  document.querySelectorAll(".star-icon").forEach((el) => el.remove());
+
+  stars.forEach((star) => {
+    const { px, py } = toPixel(star);
+
+    const icon = document.createElement("i");
+    icon.className = "ri-star-fill star-icon";
+    icon.style.left = px + "px";
+    icon.style.top = py + "px";
+
+    icon.addEventListener("click", () => showModal(star));
+    canvas.parentElement.appendChild(icon);
+  });
+}
+
+// ── LÍNEA CON GLOW ─────────────────────────────────────
+function drawGlowLine(x1, y1, x2, y2) {
+  ctx.save();
+
+  ctx.shadowColor = "rgba(180, 210, 255, 0.6)";
+  ctx.shadowBlur = 12;
+  ctx.strokeStyle = "rgba(255,255,255,0.18)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+
+  ctx.shadowColor = "rgba(220, 235, 255, 0.9)";
+  ctx.shadowBlur = 6;
+  ctx.strokeStyle = "rgba(255,255,255,0.75)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+// ── DIBUJO ─────────────────────────────────────────────
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const stars = getStars();
+
+  stars.forEach((star) => {
+    const { px, py } = toPixel(star);
+    star.connections.forEach((targetIndex) => {
+      const { px: tx, py: ty } = toPixel(stars[targetIndex]);
+      drawGlowLine(px, py, tx, ty);
+    });
+  });
+
+  renderStarIcons(stars);
+}
+
+// ── MODAL ──────────────────────────────────────────────
+function showModal(star) {
+  document.querySelector(".star-modal")?.remove();
+
+  const modal = document.createElement("div");
+  modal.className = "star-modal";
+  modal.innerHTML = `
+    <button class="modal-close"><i class="ri-close-line"></i></button>
+    <div class="modal-header">
+      <span class="modal-star-icon">★</span>
+      <h3 class="modal-title">${star.label}</h3>
+    </div>
+    ${star.image ? `<img class="modal-img" src="${star.image}" alt="${star.label}" />` : ""}
+    <p class="modal-desc">${star.description}</p>
+    <span class="modal-date">${star.date}</span>
+  `;
+
+  document.body.appendChild(modal);
+  modal
+    .querySelector(".modal-close")
+    .addEventListener("click", () => modal.remove());
+}
+
+// ── INIT ───────────────────────────────────────────────
+window.addEventListener("resize", resize);
+resize();
+
+(function () {
+  const canvas = document.getElementById("starCanvasBg");
+  const ctx = canvas.getContext("2d");
+
+  // ── Configuración ──────────────────────────────────────────────
+  const CONFIG = {
+    starCount: 880, // cantidad de estrellas de fondo
+    shootingStarInterval: 1000, // ms entre estrellas fugaces
+    twinkleSpeed: 10.4, // velocidad base del parpadeo
+    nebulaOpacity: 0.13, // opacidad de las nubes nebulosas
+  };
+
+  // ── Resize ─────────────────────────────────────────────────────
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    buildNebula(); // recalcula posiciones al cambiar tamaño
+  }
+
+  // ── Estrellas de fondo ─────────────────────────────────────────
+  function makeStars(count) {
+    return Array.from({ length: count }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.3 + 0.2,
+      phase: Math.random() * Math.PI * 2,
+      speed: CONFIG.twinkleSpeed + Math.random() * 0.5,
+      warm: Math.random() > 0.75, // algunas con tinte cálido
+    }));
+  }
+
+  let stars = [];
+
+  // ── Nebulosas ──────────────────────────────────────────────────
+  let nebulae = [];
+
+  function buildNebula() {
+    const W = canvas.width,
+      H = canvas.height;
+    nebulae = [
+      {
+        x: 0.12 * W,
+        y: 0.25 * H,
+        r: Math.min(W, H) * 0.22,
+        rgb: [70, 30, 140],
+      },
+      { x: 0.8 * W, y: 0.6 * H, r: Math.min(W, H) * 0.18, rgb: [30, 10, 110] },
+      { x: 0.5 * W, y: 0.85 * H, r: Math.min(W, H) * 0.15, rgb: [55, 10, 95] },
+      {
+        x: 0.65 * W,
+        y: 0.15 * H,
+        r: Math.min(W, H) * 0.12,
+        rgb: [90, 40, 130],
+      },
+    ];
+  }
+
+  function drawNebulae() {
+    nebulae.forEach(({ x, y, r, rgb }) => {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(
+        0,
+        `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${CONFIG.nebulaOpacity})`,
+      );
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  // ── Estrellas fugaces ──────────────────────────────────────────
+  let shooters = [];
+
+  function spawnShooter() {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    shooters.push({
+      x,
+      y,
+      len: 120 + Math.random() * 80,
+      progress: 0,
+      speed: 4 + Math.random() * 3,
+    });
+  }
+
+  function drawShooters() {
+    shooters = shooters.filter((s) => s.progress < 1);
+    shooters.forEach((s) => {
+      s.progress += s.speed / (s.len * 10);
+      const alpha = Math.sin(s.progress * Math.PI);
+      const tailX = s.x + s.progress * s.len;
+      const tailY = s.y + s.progress * s.len * 0.4;
+
+      const g = ctx.createLinearGradient(s.x, s.y, tailX, tailY);
+      g.addColorStop(0, `rgba(255,245,255,0)`);
+      g.addColorStop(1, `rgba(255,245,255,${alpha * 0.9})`);
+
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(tailX, tailY);
+      ctx.stroke();
+    });
+  }
+
+  // ── Loop principal ─────────────────────────────────────────────
+  let t = 0;
+
+  function draw() {
+    const W = canvas.width,
+      H = canvas.height;
+
+    // Fondo negro profundo
+    ctx.fillStyle = "#00000a";
+    ctx.fillRect(0, 0, W, H);
+
+    // Nebulosas
+    drawNebulae();
+
+    // Estrellas de fondo
+    stars.forEach((s) => {
+      const tw = 0.55 + 0.45 * Math.sin(t * s.speed + s.phase);
+
+      // Halo difuso
+      const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
+      if (s.warm) {
+        glow.addColorStop(0, `rgba(255,220,180,${0.18 * tw})`);
+      } else {
+        glow.addColorStop(0, `rgba(200,180,255,${0.22 * tw})`);
+      }
+      glow.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Núcleo de la estrella
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r * tw, 0, Math.PI * 2);
+      ctx.fillStyle = s.warm
+        ? `rgba(255,235,200,${0.7 + 0.3 * tw})`
+        : `rgba(240,225,255,${0.7 + 0.3 * tw})`;
+      ctx.fill();
+    });
+
+    // Estrellas fugaces
+    drawShooters();
+
+    t += 0.016;
+    requestAnimationFrame(draw);
+  }
+
+  // ── Init ───────────────────────────────────────────────────────
+  function init() {
+    resize();
+    stars = makeStars(CONFIG.starCount);
+    draw();
+    setInterval(spawnShooter, CONFIG.shootingStarInterval);
+  }
+
+  window.addEventListener("resize", () => {
+    resize();
+    stars = makeStars(CONFIG.starCount);
+  });
+
+  init();
+})();
+
+
+document.addEventListener("click", () => {
+  const musica = document.getElementById("musicaFondo");
+  musica.play();
+}, { once: true });
+
+
+
+    </script>
+</body>
+</html>

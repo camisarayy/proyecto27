@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale 1.0">
+        <title>Bienvenido</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+   <!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ti ❤️</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    font-family:'Trebuchet MS', sans-serif;
+    background:linear-gradient(-45deg,#ff4d6d,#ff758f,#ff8fa3,#ffc2d1);
+    background-size:400% 400%;
+    animation:fondo 12s ease infinite;
+}
+
+.contenedor{
+    text-align:center;
+    max-width:800px;
+    padding:30px;
+    color:white;
+    z-index:2;
+}
+
+.corazon{
+    font-size:90px;
+    animation:latido 1.2s infinite;
+    margin-bottom:15px;
+}
+
+h1{
+    font-size:3rem;
+    margin-bottom:15px;
+    text-shadow:0 0 15px rgba(255,255,255,.6);
+}
+
+#mensaje{
+    font-size:1.3rem;
+    line-height:1.8;
+    min-height:150px;
+}
+
+@keyframes latido{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.25);}
+}
+
+@keyframes fondo{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* Corazones flotando */
+.heart{
+    position:absolute;
+    color:white;
+    opacity:.7;
+    animation:subir linear infinite;
+}
+
+@keyframes subir{
+    from{
+        transform:translateY(100vh);
+        opacity:0;
+    }
+    20%{
+        opacity:.8;
+    }
+    to{
+        transform:translateY(-100px);
+        opacity:0;
+    }
+}
+
+#btnInicio{
+    display:none;
+    margin-top:30px;
+    padding:18px 35px;
+    font-size:1.2rem;
+    font-weight:bold;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    color:white;
+    background:linear-gradient(45deg,#ff4d6d,#ff85a1,#ff4d6d);
+    background-size:200% 200%;
+    animation:brillo 3s ease infinite;
+    box-shadow:0 0 20px rgba(255,255,255,.4);
+    transition:.3s;
+}
+
+#btnInicio:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 35px rgba(255,255,255,.8);
+}
+
+@keyframes brillo{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+    <div class="corazon">❤️</div>
+    <h1>Bienvenido, Mi Amor</h1>
+    <p id="mensaje"></p>
+
+    <button id="btnInicio" onclick="window.location.href='inicio.html'"> 
+      Comenzar💗💚
+    </button>
+</div>
+
+<script>
+const texto = "Antes de que sigas, quiero que sepas algo... ❤️ Esta sorpresa fue creada especialmente para ti. Gracias por cada sonrisa, cada abrazo, cada momento compartido y por hacer mis días más felices. Eres una persona muy importante para mí y quiero que nunca olvides lo especial que eres. Espero que disfrutes esta pequeña sorpresa hecha con todo mi amor. 💖✨";
+
+let i = 0;
+const mensaje = document.getElementById("mensaje");
+
+function escribir(){
+    if(i < texto.length){
+        mensaje.innerHTML += texto.charAt(i);
+        i++;
+        setTimeout(escribir, 35);
+    }else{
+      document.getElementById("btnInicio").style.display="inline-block";
+    }
+}
+
+escribir();
+
+/* Corazones flotantes */
+function crearCorazon(){
+    const corazon = document.createElement("div");
+    corazon.classList.add("heart");
+    corazon.innerHTML = "❤";
+    corazon.style.left = Math.random()*100 + "%";
+    corazon.style.fontSize = (Math.random()*25+15)+"px";
+    corazon.style.animationDuration = (Math.random()*4+4)+"s";
+    document.body.appendChild(corazon);
+
+    setTimeout(()=>{
+        corazon.remove();
+    },8000);
+}
+
+setInterval(crearCorazon,300);
+</script>
+
+</body>
+</html>

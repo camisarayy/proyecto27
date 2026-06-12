@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego</title>
+
+    <style>
+        * {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+background: 
+linear-gradient(rgba(0,0,0,0.2)),
+url(imagenes/fondojuego.jpg);
+
+  
+background-size:cover; 
+background-position:center; 
+background-repeat:no-repeat; 
+background-attachment:fixed; 
+
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section h1 {
+  font-size: 2rem;
+  text-align: center;
+  color: #f0efef;
+}
+
+.info-panel {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  background: #ffe1ef;
+  border-radius: 12px;
+  border: 2px solid #f8b8d0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  width: max-content;
+}
+
+.info-panel p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #c03578;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 15px;
+  background: #f87bb1;
+  border-radius: 15px;
+  width: max-content;
+}
+
+.card {
+  width: 100px;  
+  height: 100px; 
+  position: relative;
+  cursor: pointer;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 2px solid #f8d0db;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+
+.card .front,
+.card .back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.5s;
+}
+
+.card .front {
+  background-image: url("imagenes/Pregunta.png");
+  transform: rotateY(0deg);
+}
+
+.card .back {
+  transform: rotateY(180deg);
+}
+
+.card.active {
+  transform: rotateY(180deg);
+}
+
+#reiniciar {
+  margin: 15px 0 30px;
+  background: #f87bb1;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+#reiniciar:hover {
+  background: #e66aae;
+}
+
+/* Oculto */
+.hidden {
+  display: none;
+}
+
+/* Pantalla final */
+.win-screen {
+  margin-top: 30px;
+  text-align: center;
+  background: #ffe0f0;
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.win-screen h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.win-screen p {
+  font-size: 1.3rem;
+  margin: 10px 0;
+}
+
+#btn-restart-win {
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  background: #ff4fa5;
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#btn-restart-win:hover {
+  background: #ff1f84;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+
+  .section {
+    margin-top: 50px;
+  }
+
+  .board {
+    grid-template-columns: repeat(4, 70px);
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .card {
+    width: 70px;
+    height: 70px;
+  }
+
+  .card .front,
+  .card .back {
+    background-size: 80%; 
+  }
+
+  .info-panel {
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+  }
+
+  .section h1 {
+    font-size: 1.5rem;
+  }
+}
+
+.boton-siguiente{
+    margin: 15px 0 30px;
+  background: #629b62;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+</style>
+</head>
+
+<body>
+        
+<section class="section">
+      <h1>Encuentra las Parejas</h1>
+
+      <div class="info-panel">
+        <p><strong>Tiempo:</strong> <span id="tiempo">00:00</span></p>
+        <p><strong>Movimientos:</strong> <span id="movimientos">0</span></p>
+        <p><strong>Parejas:</strong> <span id="parejas">0 / 8</span></p>
+      </div>
+
+      <div class="board">
+        <div class="card" onclick="Uncover(0)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(1)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(2)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(3)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(4)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(5)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(6)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(7)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(8)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(9)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(10)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(11)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(12)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(13)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(14)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+
+        <div class="card" onclick="Uncover(15)">
+          <div class="front"></div>
+          <div class="back"></div>
+        </div>
+      </div>
+
+      <button id="reiniciar">Reiniciar</button>
+
+      <div class="win-screen hidden">
+        <h2>¡Ganaste! Siuuu</h2>
+        <p class="result-time">Tiempo: 00:00</p>
+        <p class="result-moves">Movimientos: 0</p>
+
+        <p> Ahora puedes continuar </p>
+
+        <button id="btn-restart-win">Jugar de nuevo</button>
+      </div>
+      <a href="recuerdo.html" id="btnSiguiente" class="boton-siguiente">Siguiente💗💗💗💗</a>
+    </section>
+
+    <audio id="musicaFondo" autoplay>
+      <source src="audio/Bad Bunny (ft. Bomba Estéreo) - Ojitos Lindos (360 Visualizer)  Un Verano Sin Ti.mp3" type="audio/mpeg">
+    </audio>
+
+
+
+    
+    <script>
+        // ------------------------
+// VARIABLES PRINCIPALES
+// ------------------------
+let time = 0;
+let timerInterval = null;
+let movimientos = 0;
+let parejas = 0;
+let primeraCarta = null;
+let segundaCarta = null;
+let bloqueo = false;
+
+// 🖼 Tus imágenes (8 parejas — debes cambiarlas por tus rutas)
+const imagenes = [
+  "imagenes/pucca.jpg",
+  "imagenes/kittydisfras.jpg",
+  "imagenes/kittyspider.jpg",
+  "imagenes/corazonkittyspider.jpg",
+  "imagenes/ima1.jpg.jpg",
+  "imagenes/halloween.jpeg",
+  "imagenes/halloweeen.jpeg",
+  "imagenes/enero.jpeg",
+];
+
+// Duplicamos y mezclamos
+let cartas = [...imagenes, ...imagenes].sort(() => Math.random() - 0.5);
+
+// ------------------------
+// INICIALIZACIÓN
+// ------------------------
+window.onload = () => {
+  asignarImagenes();
+  document
+    .getElementById("reiniciar")
+    .addEventListener("click", reiniciarJuego);
+};
+
+// Pone cada imagen en su ".back"
+function asignarImagenes() {
+  const backs = document.querySelectorAll(".card .back");
+  backs.forEach((back, i) => {
+    back.style.backgroundImage = `url(${cartas[i]})`;
+  });
+}
+
+// ------------------------
+// FUNCIÓN PARA DESTAPAR
+// ------------------------
+function Uncover(id) {
+  if (bloqueo) return;
+  const card = document.querySelectorAll(".card")[id];
+
+  // Inicia el tiempo en la primera jugada
+  if (movimientos === 0 && parejas === 0 && !timerInterval) iniciarTiempo();
+
+  // Evita clickear la misma dos veces
+  if (card.classList.contains("active")) return;
+
+  card.classList.add("active");
+
+  // Primera carta
+  if (!primeraCarta) {
+    primeraCarta = { id, element: card };
+    return;
+  }
+
+  // Segunda carta
+  segundaCarta = { id, element: card };
+  bloquearClicks();
+
+  movimientos++;
+  document.getElementById("movimientos").textContent = movimientos;
+
+  compararCartas();
+}
+
+// ------------------------
+// COMPARACIÓN DE CARTAS
+// ------------------------
+function compararCartas() {
+  const img1 = cartas[primeraCarta.id];
+  const img2 = cartas[segundaCarta.id];
+
+  if (img1 === img2) {
+    parejas++;
+    document.getElementById("parejas").textContent = `${parejas} / 8`;
+
+    resetSeleccion();
+
+    if (parejas === 8) ganarJuego();
+  } else {
+    // No coinciden → girarlas otra vez
+    setTimeout(() => {
+      primeraCarta.element.classList.remove("active");
+      segundaCarta.element.classList.remove("active");
+      resetSeleccion();
+    }, 800);
+  }
+}
+
+// Limpieza después de comparar
+function resetSeleccion() {
+  primeraCarta = null;
+  segundaCarta = null;
+  desbloquearClicks();
+}
+
+// ------------------------
+// BLOQUEOS
+// ------------------------
+function bloquearClicks() {
+  bloqueo = true;
+}
+
+function desbloquearClicks() {
+  bloqueo = false;
+}
+
+// ------------------------
+// TIEMPO
+// ------------------------
+function iniciarTiempo() {
+  timerInterval = setInterval(() => {
+    time++;
+    mostrarTiempo();
+  }, 1000);
+}
+
+function mostrarTiempo() {
+  const min = String(Math.floor(time / 60)).padStart(2, "0");
+  const sec = String(time % 60).padStart(2, "0");
+  document.getElementById("tiempo").textContent = `${min}:${sec}`;
+}
+
+// ------------------------
+// GANAR
+// ------------------------
+// ------------------------
+// GANAR → Mostrar pantalla final
+// ------------------------
+function ganarJuego() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  // Ocultar interfaz normal
+  document.querySelector(".board").classList.add("hidden");
+  document.querySelector(".info-panel").classList.add("hidden");
+  document.getElementById("reiniciar").classList.add("hidden");
+
+  // Insertar datos en la pantalla final
+  document.querySelector(".result-time").textContent =
+    "Tiempo: " + document.getElementById("tiempo").textContent;
+
+  document.querySelector(".result-moves").textContent =
+    "Movimientos: " + movimientos;
+
+  // Mostrar pantalla final
+  document.querySelector(".win-screen").classList.remove("hidden");
+}
+
+// Botón "jugar de nuevo"
+document.getElementById("btn-restart-win").addEventListener("click", () => {
+  location.reload();
+});
+
+// Botón "Otra Paguina"
+document.getElementById("btn-restart-win").addEventListener("click", () => {
+  location.reload();
+  })
+
+// ------------------------
+// REINICIAR
+// ------------------------
+function reiniciarJuego() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  time = 0;
+  movimientos = 0;
+  parejas = 0;
+  primeraCarta = null;
+  segundaCarta = null;
+
+  document.getElementById("tiempo").textContent = "00:00";
+  document.getElementById("movimientos").textContent = 0;
+  document.getElementById("parejas").textContent = "0 / 8";
+
+  // Reset de cartas
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((c) => c.classList.remove("active"));
+
+  // Nueva mezcla
+  cartas = [...imagenes, ...imagenes].sort(() => Math.random() - 0.5);
+  asignarImagenes();
+}
+// PEGA ESTO AL FINAL
+const musica = document.getElementById("musicaFondo");
+
+document.addEventListener("click", () => {
+    musica.play();
+}, { once: true });
+
+    </script>
+</body>
+</html>

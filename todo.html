@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ti ❤️</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(180deg,#120024,#000);
+    font-family:Arial,sans-serif;
+}
+
+.nombre{
+    position:absolute;
+    font-size:4rem;
+    color:white;
+    font-weight:bold;
+    text-shadow:0 0 20px #42b459;
+    z-index:10;
+}
+
+.palabra{
+    position:absolute;
+    color:#ffd6f5;
+    font-size:1.2rem;
+    animation:flotar linear infinite;
+    white-space:nowrap;
+}
+
+@keyframes flotar{
+    from{
+        transform:translateY(100vh);
+        opacity:0;
+    }
+    20%{
+        opacity:1;
+    }
+    80%{
+        opacity:1;
+    }
+    to{
+        transform:translateY(-120px);
+        opacity:0;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="nombre">Jonatan</div>
+<audio id="musicaFondo" autoplay>
+      <source src="audio/nochedeestrellas.mp3" type="audio/mpeg">
+    </audio>
+<a href="recuerdo.html" id="btnSiguiente" class="boton-siguiente">Siguiente💗💗💗💗</a>
+<script>
+const palabras = [
+    "Hermoso❤️",
+    "Increible ✨",
+    "Inteligente 💚 ",
+    "Valiente 💕",
+    "Especial 💚",
+    "Único💜",
+    "Trabajador 🥰",
+    "Maravilloso ✨",
+    "Mi persona favorita ❤️",
+    "Empeñoso 🌸"
+];
+
+function crearPalabra(){
+    const palabra = document.createElement("div");
+    palabra.classList.add("palabra");
+
+    palabra.innerText =
+        palabras[Math.floor(Math.random() * palabras.length)];
+
+    palabra.style.left = Math.random() * 90 + "%";
+    palabra.style.animationDuration =
+        (Math.random() * 6 + 6) + "s";
+
+    document.body.appendChild(palabra);
+
+    setTimeout(() => {
+        palabra.remove();
+    }, 12000);
+}
+
+setInterval(crearPalabra, 500);
+</script>
+
+</body>
+</html>

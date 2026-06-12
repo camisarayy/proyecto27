@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale 1.0">
+        <link rel="stylesheet" href="https://cdn.jsdeliv.net/npm/swiper@9/swiper-bundle.min.css" />
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesone/6.4.0/css/all.min.css" 
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="carta.css">
+        <title>te amo </title>
+      
+<style>
+    body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Georgia, serif;
+    background: url("imagenes/tapelcute.jpg") no-repeat center/cover;
+    }
+    
+/* BOTON */
+.boton {
+    padding: 15px 25px;
+    background: #2569ad;
+    color: white;
+    border: none;
+    padding: 15px 32px;
+    text-decoration: none;
+    border-radius: 12px;
+    font-family: sans-serif;
+    border-style: outset;
+
+    
+}
+
+/*SOBRE*/
+.sobre {
+    display: none;
+    position: relative;
+    width: 80vw;
+    max-width: 320px;
+    height: 22vh;
+    max-height: 220px;
+    background-image: url(sobre.jpg);
+    overflow: visible;
+}
+
+.tapa {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url(sobre.jpg);
+    clip-path: polygon(0 0, 100% 0, 50% 60%);
+    transform-origin: top;
+    transition: 1s;
+}
+
+/* CARTA */
+.carta {
+    display:block;
+    position: absolute;
+    width: 90%;
+    max-width: 260px;
+    left: 50%;
+    transform: translate(-50%, 100%); 
+    transition: 1s;
+    padding: 15px;
+    border-radius: 10px;
+    max-height: 300px;
+    overflow: auto;
+    
+
+    z-index: 5;
+
+    background: repeating-linear-gradient(
+        #fdf6e3,
+        #fdf6e3 28px,
+        #e6d5b8 29px
+
+    );
+
+    color: #4b3b2b;
+
+}
+
+.siguiente {
+    display:none;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #377038;
+    border:none;
+    border-radius: 8px;
+    background:#b6895b;
+    color: white;
+    cursor: pointer;
+    text-decoration:none;
+}
+
+/* ESTADO ABIERTO */
+
+.sobre.abierto .tapa {
+
+    transform: rotateX(180deg);
+    overflow: visible;
+
+}
+
+.sobre.abierto .carta {
+  animation: salirCarta 1s ease forwards;
+  transform: translate(-50%, 10%);
+    
+}
+@keyframes salirCarta {
+    0% { 
+        transform: translate(-50%, 100%);
+    }
+    60% {
+        transform: translate(-50%, -70%) rotate(-6deg);
+    }
+    100% {
+        transform: translate(-50%, -60%) rotate(-5deg);
+    }
+}
+/* FOTO */
+.foto {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.3);
+}
+/* NOMBRE */
+.nombre {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* CORAZONES */
+.corazon {
+    position: absolute;
+    animation: flotar 5s linear infinite;
+}
+
+@keyframes flotar {
+    100% {
+        transform: translateY(-100vh);
+        opacity: 0;
+    }
+}
+
+</style>
+</head>
+<body>
+    
+    <button class="boton" onclick="iniciar()">Abrir carta 💌</button>
+    
+</div>
+<div class="sobre" id="sobre">
+    <div class="tapa" id="tapa"></div>
+
+
+
+<div class="carta" id="carta">
+    
+    <div class="nombre">Querido Jonatan 💖</div>
+
+    <!-- 📸 CAMBIA ESTA IMAGEN -->
+    <img src="" class="foto">
+
+    <p id="texto"></p>
+    <div id="firma" style="text-align:right; margin-top:15px;"></div>
+<a href="siguiente.html" class="id">Siguiente💗💗💗💗</a>
+</div>
+
+<audio id="musica" src="MI OTRA MITAD  LittleBoy - LittleBoy.mp3"></audio>
+
+
+<script> 
+    function iniciar() {
+    document.querySelector(".boton").style.display = "none";
+     const sobre =document.getElementById("sobre").style.display = "block";
+    setTimeout(() => {
+        sobre.classList.add("abierto");
+    }, 100);
+}
+
+function abrirCarta() {
+    document.getElementById("tapa").style.transform = "rotateX(180deg)";
+    document.getElementById("musica").play();
+    
+
+    setTimeout(() => {
+        let carta = document.getElementById("carta");
+        carta.style.transform = "translate(-50%, -50%) scale(1)";
+        carta.style.opacity = "1";
+
+        escribir();
+        document.getElementById("musica").play().catch(()=>{});
+        corazones();
+    }, 700);
+}
+
+const mensaje = `Como ha pasado el tiempo y Un Añito Juntos🥹
+Amo nuestra relación y pido a Dios que siempre nos fotalezca mas nuestro vinculo
+Gracias por tantos lindos momentos, mirar hace un año desde el día que nos conocimos y sigo sintindo
+Esas maripositas en el corazón y en el alma 🥹 Te amo Muchisimo más que mi corazón, mi ser y más alla de mi alma 💗
+Adoro tanto esos momentos en cuales nosotros hablamos desde el te acuerdas "De ese viernes 16 de mayo"
+Desde ahi, aqui seguimos llenandonos de amor, si apesar de las diferencias o discusiones 
+No nos dejamos de preocuparnos del uno al otro porque somos equipo
+Amo compartir mi vida contigo, como te escribi en una de las primeras cartas 
+Senti que te conocia desde antes que en la otra vida tu fuiste "MI OTRA MITAD" y el año pasado
+nos nuestras almas se reencontraron y somos uno para el otro.
+Quiero que sepas que eres alguien muy especial en mi vida en la cual 
+Quiero seguir construyendo, ir creciendo contigo e ir mejorando cada día para darte más y más lo mejor de mi.
+Gracias por amarme, Gracias por risas, Gracias por esos momentos tan pequeños en la cual nos abrimos, 
+Gracias por esos momentos de desbordes de amor cuando nos emocionamos de tanto que nos amamos
+Gracias por estar conmigo 🥹💗`;
+
+let i = 0;
+function escribir() {
+    if (i < mensaje.length) {
+        document.getElementById("texto").innerHTML += mensaje.charAt(i);
+        i++;
+        setTimeout(escribir, 35);
+
+    } else {
+        document.getElementById("firma").innerHTML = "Con amor,<br>Socosani 🥹💗💚";
+        setTimeout (() => {
+
+        
+        document.getElementById("siguiente").style.display = 
+        "inline-block";
+   
+    } ,3000);
+
+    }
+}
+
+function corazones() {
+    setInterval(() => {
+        let c = document.createElement("div");
+        c.className = "corazon";
+        c.innerHTML = "❤️";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.fontSize = (Math.random() * 15 + 10) + "px";
+        document.body.appendChild(c);
+
+        setTimeout(() => c.remove(), 5000);
+    }, 400);
+}
+</script>
+    </head>
+    
+        
+    </body>
+</html>

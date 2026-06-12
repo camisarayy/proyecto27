@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale 1.0">
+        <title>Bienvenido</title>
+        <link rel="stylesheet" href="style.css">
+        <style>
+        body {
+  margin: 0;
+  height: 100vh;
+  background-image: url(imagenes/corazonregla.jpeg);
+  background-size: cover;
+  background-position: center;
+  font-family: Arial;
+  text-align: center;
+
+}
+
+/* Título */
+h1 {
+  margin-top: 30px;
+  color: #15741b;
+  background-image: url("imagenes/rosaverde.jpg");
+  border-radius: 15px;
+  border-style: outset;
+  display: inline-block;
+  text-shadow: 1px 2px #999;
+}
+
+.h2 {
+  
+   margin-top: 30px;
+  color: #15741b;
+  border-radius: 15px;
+  border-style: outset;
+  display: inline-block;
+  text-shadow: 1px 2px #999;
+
+
+  }
+
+.carousel { 
+    margin: 100px auto;
+    width: 50%;
+    border: 5px solid red;
+    display: flex;
+    overflow-x: scroll;
+    gap: 1em;
+    
+}
+
+.contenedor{
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.cuadro {
+    border: 3px solid red;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 15px;
+}
+
+
+.carousel::-webkit-scrollbar{
+    display: none;
+}
+.group{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    animation: scroll 8s infinite linear;
+    padding-right: 1em;
+ }
+
+.card img { 
+    flex: 0 0 5em;
+    margin: 0 50px;
+    width: 350px;
+    height: 350px;
+    padding: 1em;
+    font-size: 3rem;
+    border-radius: .2em;
+    text-align: center;
+    align-content: center;
+ }
+
+
+
+.carousel-track {
+    display: flex;
+    width: max-content;
+    animation: scroll 8s linear infinite;}
+
+    
+.boton {
+  background-color: #ea0881;
+  border: 3px solid;
+  color:#ffe6f0;
+  padding: 15px 50px;
+  font-size: 1,4rem;
+  border-radius: 12px;
+  font-family: sans-serif;
+  font-size: xx-large;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: inline-block;
+  text-shadow: 1px 2px #0b0606;
+  
+}
+
+.boton:hover {
+  background-color: rgb(6, 91, 6);
+  box-shadow: 0 0 20px var (--color);
+  border-color: #e07acc;
+}
+
+.boton span:nth-child(n){
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border: 3px solid;
+        transition: all 0.6s ease;
+        
+    }
+
+    .boton span:nth-child(1){
+        right: 10%;
+        top: -10px;
+        background-color: #ffe6f0;
+    }
+
+    .boton span:nth-child(2){
+        left: 10%;
+        bottom: -10px;
+        background-color: #ffe6f0;
+        
+    }
+   
+.boton span:nth-child(1){
+        right: 80%;
+        transform: rotate(90deg);
+        color: var(--color);
+        background-color: var(--color);
+        
+    }
+
+     .boton span:nth-child(2){
+        left: 80%;
+        transform: rotate(90deg);
+        color: var(--color);
+        
+    }
+
+.h2 {
+  margin-top: 30px;
+  color: #15741b;
+  background-image: url(rosaverde.jpeg);
+  border-radius: 15px;;  
+  border-style: outset;
+  display: inline-block;
+  text-shadow: 1px 2px #999;
+}
+
+.mensaje-romantico{
+    background: rgba(255,255,255,0.85);
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+.mensaje-romantico {
+    color: #660a33;
+    margin-bottom: 15px;
+}
+
+.mensaje-romantico p{
+    color: #555;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+
+@keyframes scroll {
+    from {translate: 0;}
+    to {translate: -100%;}
+
+}
+.card img{
+    border: 8px solid white;
+    background-color: #f9f9f9;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+    border-radius: 15px;
+    text-align: center;
+
+}
+.borde .mensaje-romantico {
+    border: 8px solid #e07acc;
+    border-color: #e07acc;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    text-align: center;
+    }
+    </style>
+  </head>
+
+<body>
+    <div class="borde-corazones"></div>
+
+<h1>💗💚Feliz Primer Aniversario💗💚</h1>
+
+<div class="carousel">
+   <div class="group">
+    <div class="card"><img src="imagenes/amoooor.JPG" alt=""></div>
+            <div class="card"><img src="imagenes/ima1.jpg.jpg" alt=""></div>
+            <div class="card"><img src="imagenes/enamorada.jpg" alt=""></div>
+        </div>
+            <div aria-hidden class="group">
+            <div class="card"><img src="imagenes/amoooor.JPG" alt=""></div>
+            <div class="card"><img src="imagenes/ima1.jpg.jpg" alt="" ></div></div>
+            <div class="card"><img src="imagenes/enamorada.jpg" alt="" ></div></div>
+
+            <div class="mensaje-romantico">
+<h2>💗Feliz 1°er Aniversario💚 </h2> 
+      Mi vida no sabes de Lo agradecida que estoy de la vida por 
+      
+      tenerte a mi lado 💗💚
+
+<p>
+    Gracias por cada momento, Gracias Por estar y Gracias Por quererme
+</p>
+
+<p>
+    Te Amo 💗
+</p>
+    
+</div>
+
+ <a  href="memoria.html" class="boton">Ver Carta💗💚</a>
+ 
+<audio autoplay>
+<source src="audio/amorinicio.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+    // Botón
+function entrar(){
+  document.getElementById("musica").play().catch(()=>{});
+  setTimeout(() => {
+    window.location.href = "mejorado.html";
+  }, 800);
+}
+
+</script>
+</body>
+</html>
+   
+          

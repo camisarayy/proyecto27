@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nuestra Historia ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Dancing Script',cursive;
+min-height:100vh;
+background:
+linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+url('playa.jpg');
+background-size:cover;
+background-position:center;
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:20px;
+overflow-x:hidden;
+}
+
+/* TITULO */
+
+h1{
+font-size:3rem;
+margin-top:20px;
+text-align:center;
+}
+
+/* CONTADOR */
+
+.contador{
+margin-top:20px;
+font-size:1.8rem;
+text-align:center;
+background:rgba(255,255,255,.1);
+backdrop-filter:blur(10px);
+padding:15px 25px;
+border-radius:20px;
+}
+
+/* ALBUM */
+
+.album{
+margin-top:30px;
+width:320px;
+height:420px;
+perspective:1000px;
+}
+
+.libro{
+width:100%;
+height:100%;
+position:relative;
+transform-style:preserve-3d;
+transition:1s;
+cursor:pointer;
+}
+
+
+.portada,
+.pagina{
+position:absolute;
+width:100%;
+height:100%;
+border-radius:20px;
+backface-visibility:hidden;
+overflow:hidden;
+box-shadow:0 0 25px rgba(0,0,0,.5);
+}
+
+.portada{
+background:rgba(255,255,255,.15);
+backdrop-filter:blur(10px);
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:2rem;
+}
+
+.pagina{
+transform:rotateY(180deg);
+background:white;
+padding:10px;
+color:black;
+}
+
+.pagina img{
+width:100%;
+height:80%;
+object-fit:cover;
+border-radius:15px;
+}
+
+.texto{
+text-align:center;
+margin-top:10px;
+}
+
+/* TOCADISCOS */
+
+.tocadiscos{
+margin-top:40px;
+text-align:center;
+}
+
+.vinilo{
+width:260px;
+height:260px;
+border-radius:50%;
+background:
+radial-gradient(circle,#444 10%,#111 20%,#222 35%,#111 55%,#222 75%,#111 100%);
+display:flex;
+justify-content:center;
+align-items:center;
+margin:auto;
+}
+
+.caratula{
+width:90px;
+height:90px;
+border-radius:10px;
+object-fit:cover;
+}
+
+.girar{
+animation:girar 4s linear infinite;
+}
+
+@keyframes girar{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
+}
+
+button{
+margin-top:20px;
+padding:12px 25px;
+border:none;
+border-radius:25px;
+font-size:18px;
+cursor:pointer;
+}
+
+/* CORAZONES */
+
+.corazon{
+position:fixed;
+bottom:-20px;
+font-size:20px;
+animation:subir 8s linear infinite;
+opacity:.8;
+}
+
+@keyframes subir{
+from{
+transform:translateY(0);
+}
+to{
+transform:translateY(-120vh);
+}
+}
+
+.album{
+margin-top:30px;
+width:350px;
+background:(255,255,255,.15);
+backdrop-filter:(10px);
+padding:15px;
+border-radius:20px;
+box-shadow:0 0 25px rgba(0,0,0,.4);
+}
+
+.album img{
+width:100%;
+height:420px;
+object-fit:contain;
+border-radius:15px;
+}
+
+.texto{
+margin-top:10px;
+font-size:1.5rem;
+text-align:center;
+color:#111;
+}
+
+</style>
+</head>
+<body>
+
+<h1>❤️ Nuestra Historia ❤️</h1>
+
+<div class="contador">
+<div>Juntos desde</div>
+<div id="contador"></div>
+</div>
+
+<div class="album">
+
+<div class="libro" id="libro">
+
+<div class="portada">
+📖 Abrir Álbum2
+</div>
+
+<div class="pagina">
+<img id="fotoAlbum" src="imagenes/poquito.jpeg">
+<div class="texto" id="textoAlbum">
+Nuestro primer recuerdo 💕
+</div>
+</div>
+
+<div class="pagina2">
+<img id="fotoAlbum" src="imagenes/halloweeen.jpeg">
+<div class="texto" id="textoAlbum">
+Nuestro primer recuerdo 💕
+
+
+<div class="pagina2">
+<img id="fotoAlbum" src="imagenes/amoooor.JPG">
+<div class="texto" id="textoAlbum">
+Nuestro primer recuerdo 💕
+
+<div class="pagina2">
+<img id="fotoAlbum" src="imagenes/vango.jpeg">
+<div class="texto" id="textoAlbum">
+Nuestro primer recuerdo 💕
+
+<div class="pagina2">
+<img id="fotoAlbum" src="imagenes/locahistoria.jpeg">
+<div class="texto" id="textoAlbum">
+Nuestro primer recuerdo 💕
+
+
+<div style="margin-top:15px;text-align:center;"> 
+<button onclick="anterior()">⬅️</button> 
+<button onclick="siguiente()">➡️</button> 
+</div>
+
+</div>
+
+</div>
+
+<div class="tocadiscos">
+
+<div class="vinilo" id="vinilo">
+<img src="imagenes/offf-removebg-preview.png" class="caratula">
+</div>
+
+<button onclick="playMusic()">
+🎵 Reproducir
+</button>
+
+<audio id="musica" src="audio/rockwithyou.mp3"></audio>
+
+</div>
+
+<script>
+
+/* ABRIR ALBUM */
+
+document.getElementById("libro").addEventListener("click",()=>{
+document.getElementById("libro").classList.toggle("abierto");
+});
+
+/* CONTADOR */
+
+const inicio = new Date("2025-06-27");
+
+function actualizar(){
+
+const ahora = new Date();
+
+const diferencia = ahora - inicio;
+
+const dias = Math.floor(diferencia/(1000*60*60*24));
+
+const horas = ahora.getHours();
+const minutos = ahora.getMinutes();
+const segundos = ahora.getSeconds();
+
+document.getElementById("contador").innerHTML=
+`${dias} días ❤️ ${horas}h ${minutos}m ${segundos}s`;
+
+}
+
+setInterval(actualizar,1000);
+actualizar();
+
+/* MUSICA */
+
+function playMusic(){
+
+const audio = document.getElementById("musica");
+
+audio.play();
+
+document.getElementById("vinilo")
+.classList.add("girar");
+
+}
+
+/* CORAZONES */
+
+setInterval(()=>{
+
+const corazon=document.createElement("div");
+
+corazon.className="corazon";
+corazon.innerHTML="❤️";
+
+corazon.style.left=Math.random()*100+"vw";
+
+document.body.appendChild(corazon);
+
+setTimeout(()=>{
+corazon.remove();
+},8000);
+
+},700);
+
+const paginas = [
+{
+foto:"imagenes/poquito.jpeg",
+texto:"Nuestro primer recuerdo 💕"
+},
+{
+foto:"imagenes/halloweeen.jpeg",
+texto:"Un día muy especial ❤️"
+},
+{
+foto:"imagenes/foto3.jpeg",
+texto:"Siempre juntos ✨"
+},
+{
+foto:"imagenes/vango.jpeg",
+texto:"Mi lugar favorito eres tú 🥰"
+},
+{
+foto:"imagenes/amoooor.jpg",
+texto:"Te amo muchísimo 💖"
+}
+];
+
+let paginaActual = 0;
+
+function mostrarPagina(){
+
+document.getElementById("fotoAlbum").src =
+paginas[paginaActual].foto;
+
+document.getElementById("textoAlbum").innerHTML =
+paginas[paginaActual].texto;
+
+}
+
+function siguiente(){
+
+paginaActual++;
+
+if(paginaActual >= paginas.length){
+paginaActual = 0;
+}
+
+mostrarPagina();
+
+}
+
+function anterior(){
+
+paginaActual--;
+
+if(paginaActual < 0){
+paginaActual = paginas.length - 1;
+}
+
+mostrarPagina();
+
+}
+
+
+</script>
+
+</body>
+</html>

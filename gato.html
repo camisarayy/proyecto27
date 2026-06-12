@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <title>Jugando al Ritmo de mi Corazón 💗🎶</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+     /* GENERAL RESET & GLOBAL SETTINGS */
+:root {
+  --color-bg: #111;
+  --color-cell: #222;
+  --color-border: #555;
+  --color-x: crimson;
+  --color-o: royalblue;
+  --color-win: #4caf50;
+  --color-text: white;
+  --color-btn: #333;
+  --color-selected: #e6c34a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  user-select: none;       /* Evita seleccionar texto con el mouse */
+  -webkit-user-select: none; /* Safari/Chrome */
+  -ms-user-select: none;     /* IE/Edge */
+
+  -webkit-tap-highlight-color: transparent; /* iOS/Android: elimina el flash azul (efecto tactil) */
+
+}
+
+body {
+  height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;     
+  background: #000;
+  color: var(--color-text);
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+body::before {
+content: "";
+position: fixed;
+inset: 0;
+pointer-events: none;
+
+background:
+radial-gradient(circle at 20% 20%, rgba(255,0,128,.4), transparent 20%),
+radial-gradient(circle at 80% 25%, rgba(0,255,255,.4), transparent 20%),
+radial-gradient(circle at 50% 10%, rgba(255,255,0,.3), transparent 20%),
+radial-gradient(circle at 30% 80%, rgba(0,255,100,.3), transparent 20%);
+
+animation: lucesConcierto 8s ease-in-out infinite alternate;
+}
+
+@keyframes lucesConcierto {
+0% {
+transform: translateX(-80px) translateY(-20px);
+}
+
+50% {
+transform: translateX(50px) translateY(30px);
+}
+
+100% {
+transform: translateX(-30px) translateY(-40px);
+}
+}
+
+h1 {
+  font-size: 2rem;
+  text-align: center;
+}
+
+
+/* TABLERO Y CELDAS */
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+
+  /* Para que se adapte a pantallas: */
+  width: min(90vw, 400px);  /* El tablero será máx 400px o 90% del ancho */
+  height: min(90vw, 400px); /* Ancho = Altura = Siempre cuadrado */
+}
+
+.cell {
+  background: var(--color-cell);
+  border: 2px solid var(--color-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  aspect-ratio: 1 / 1; /* Forzamos Cuadrado*/
+}
+
+
+/* HOVER PREVIEW */
+.cell.previewX {
+  background-color: var(--color-x);
+  opacity: 0.9;
+}
+.cell.previewO {
+  background-color: var(--color-o);
+  opacity: 0.9;
+}
+
+/* VISOR DE TURNOS + MODOS */
+.modeRow {
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  max-width: 350px;
+  margin: 15px auto 20px auto;
+}
+
+/* Iconos */
+.modeIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; 
+  font-size: 1.4rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+  border: 3px solid #000;
+  background: #444;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.modeIcon:hover {
+  background: #666;
+}
+
+.modeIcon.active {
+  background: var(--color-selected);
+}
+
+
+/* Visor */
+#turnBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: min(45vw, 220px);
+  overflow: hidden;
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: bold;
+  text-align: center;
+  color: var(--color-text);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+  border: 3px solid #000; 
+}
+
+.turnSide:first-child {
+  border-right: 3px solid #000;
+}
+
+.turnSide {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 0; 
+  background-color: #444;
+  transition: background 0.3s ease;
+}
+
+/* Colores de turno */
+.activeX {
+  background-color: var(--color-x);
+}
+
+.activeO {
+  background-color: var(--color-o);
+}
+
+
+/* CELDAS GANADORAS */
+.winner {
+  background-color: var(--color-win);
+  color: #fff; 
+  box-shadow: 0 0 15px rgba(59, 165, 93, 0.7);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+/* MENSAJE GANADOR */
+.winnerJ {
+  margin-top: 20px;
+  color: var(--color-text);
+  font-size: clamp(10px, 5vw, 22px);
+  font-weight: bold;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+
+/* BOTÓN REINICIAR */
+.restartBtn {
+  margin: 18px auto;
+  padding: 10px 20px;
+  border: none;
+  background: var(--color-btn);
+  color: var(--color-text);
+  font-weight: bold;
+  font-size: clamp(10px, 5vw, 18px);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: clamp(90px, 30vw, 130px);
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+}
+
+.restartBtn:hover {
+  background: var(--color-o);
+}
+
+.restartBtn:active {
+  transform: scale(0.95);
+}
+
+    </style>
+  </head>
+  <body>
+    <h1>Juguemos al Ritmo de mi Corazón 💗🎶</h1>
+
+    <!-- Barra completa -->
+    <div class="modeRow">
+      <div id="playerIcon" class="modeIcon"><i class="bx bxs-user"></i></div>
+      <!--Visor De Turnos-->
+      <div id="turnBox">
+        <div id="turnX" class="turnSide">💗</div>
+        <div id="turnO" class="turnSide">🎶</div>
+      </div>
+
+      <div id="botIcon" class="modeIcon"><i class="bx bxs-invader"></i></div>
+    </div>
+
+    <!-- Tablero -->
+    <div class="container">
+      <div class="cell" id="1"></div>
+      <div class="cell" id="2"></div>
+      <div class="cell" id="3"></div>
+      <div class="cell" id="4"></div>
+      <div class="cell" id="5"></div>
+      <div class="cell" id="6"></div>
+      <div class="cell" id="7"></div>
+      <div class="cell" id="8"></div>
+      <div class="cell" id="9"></div>
+    </div>
+
+    <!-- Mensaje Ganador -->
+    <p id="winnerMessage" class="winnerJ hidden"></p>
+
+    <!-- Botón Reiniciar -->
+    <button class="restartBtn" id="restartBtn">Reiniciar</button>
+    <audio id="musicaFondo" autoplay>
+      <source src="audio/ritmodemicorazon.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Selecionamos todas las celdas
+const cells = document.querySelectorAll(".cell");
+
+// Tablero
+let board = ["", "", "", "", "", "", "", "", ""];
+
+// Jugador Actual
+let currentPlayer = "💗";
+
+// Termino la ronda?
+let gameOver = false;
+
+// Modo de Juego, Empieza en Bot
+let gameMode = "bot";
+
+let botThinking = false;
+
+// Combinaciones Ganadoras (Basadas en posiciones del array board[0...8])
+const winningCombinations = [
+  [0, 1, 2], // Fila 1
+  [3, 4, 5], // Fila 2
+  [6, 7, 8], // Fila 3
+  [0, 3, 6], // Columna 1
+  [1, 4, 7], // Columna 2
+  [2, 5, 8], // Columna 3
+  [0, 4, 8], // Diagonal
+  [2, 4, 6], // Diagonal
+];
+
+//
+// 1. Función ¿Alguien Ganó?
+//
+function checkWinner() {
+  for (let combo of winningCombinations) {
+    const [a, b, c] = combo;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      gameOver = true; // Bloquea tablero si hay ganador
+
+      // Clase .winner a las casillas ganadoras
+      [a, b, c].forEach((index) => {
+        cells[index].classList.add("winner");
+      });
+
+      return board[a]; // Devuelve "X" o "O"
+    }
+  }
+  // Verificar empate (si no hay casillas vacías y nadie ganó)
+  if (!board.includes("")) {
+    gameOver = true;
+    return "Empate";
+  }
+  return null; // Nadie Ganó Todavia
+}
+
+//
+// 2. Hover y Click
+//
+cells.forEach((cell, movement) => {
+  cell.addEventListener("mouseenter", () => {
+    if (board[movement] === "" && !gameOver && !botThinking) {
+      cell.classList.add(currentPlayer === "X" ? "previewX" : "previewO");
+    }
+  });
+
+  cell.addEventListener("mouseleave", () => {
+    cell.classList.remove("previewX", "previewO");
+  });
+
+  cell.addEventListener("click", () => {
+    if (gameOver) return;
+    if (board[movement] !== "") return;
+
+    // Guardamos la jugada
+    board[movement] = currentPlayer;
+    cell.textContent = currentPlayer;
+    cell.classList.remove("previewX", "previewO");
+
+    // Revisamos si hay ganador
+    const winner = checkWinner();
+    if (winner) {
+      endGame(winner);
+      return;
+    }
+
+    // Cambiamos turno
+    currentPlayer = currentPlayer === "💗" ? "🎶" : "💗";
+    updateTurnBox();
+
+    // Si es turno del bot y el modo es "bot"
+    if (gameMode === "bot" && currentPlayer === "🎶") {
+      botThinking = true; // Hover Player Chao
+      setTimeout(() => {
+        botMove();
+        botThinking = false;
+      }, 500);
+    }
+  });
+});
+
+//
+// 3. Mensaje Ganador
+//
+const winnerMessage = document.getElementById("winnerMessage");
+const restartBtn = document.getElementById("restartBtn");
+
+function endGame(result) {
+  if (result === "Empate") {
+    winnerMessage.textContent = "Empate";
+  } else {
+    winnerMessage.textContent = `Ganó ${result}`;
+  }
+  winnerMessage.classList.remove("hidden");
+}
+
+// Reiniciar partida
+function resetGame() {
+  // Reiniciamos Tablero y Variables
+  board = ["", "", "", "", "", "", "", "", ""];
+  cells.forEach((cell) => {
+    cell.textContent = "";
+    cell.classList.remove("winner");
+  });
+
+  if (gameMode === "player") {
+    currentPlayer = Math.random() < 0.5 ? "💗" : "🎶"; // aleatorio
+  } else {
+    currentPlayer = "💗";
+  }
+
+  gameOver = false;
+  updateTurnBox();
+
+  // ocultar mensaje ganador
+  winnerMessage.textContent = "";
+  winnerMessage.classList.add("hidden");
+}
+
+restartBtn.addEventListener("click", resetGame);
+
+//
+// 4. Visor Turno
+//
+const turnX = document.getElementById("turnX");
+const turnO = document.getElementById("turnO");
+
+function updateTurnBox() {
+  if (currentPlayer === "X") {
+    turnX.classList.add("activeX");
+    turnO.classList.remove("activeO");
+  } else {
+    turnO.classList.add("activeO");
+    turnX.classList.remove("activeX");
+  }
+}
+
+updateTurnBox();
+
+//
+// 5. Modos de Juego
+//
+const playerIcon = document.getElementById("playerIcon");
+const botIcon = document.getElementById("botIcon");
+
+function updateMode(selected) {
+  if (selected === "player") {
+    playerIcon.classList.add("active");
+    botIcon.classList.remove("active");
+    gameMode = "player";
+    currentPlayer = Math.random() < 0.5 ? "💗" : "🎶";
+  } else {
+    botIcon.classList.add("active");
+    playerIcon.classList.remove("active");
+    gameMode = "bot";
+    currentPlayer = "X";
+  }
+  updateTurnBox();
+  resetGame();
+}
+
+// Inicializar en "bot"
+updateMode("bot");
+
+// Clicks en iconos
+playerIcon.addEventListener("click", () => updateMode("player"));
+botIcon.addEventListener("click", () => updateMode("bot"));
+
+//
+// 6. Bot
+//
+function botMove() {
+  if (gameOver) return;
+
+  // 1. ¿Puede el bot ganar ya?
+  for (let combo of winningCombinations) {
+    const [a, b, c] = combo;
+    if (board[a] === "" && board[b] === "O" && board[c] === "🎶") {
+      return makeMove(a);
+    }
+    if (board[b] === "" && board[a] === "O" && board[c] === "🎶") {
+      return makeMove(b);
+    }
+    if (board[c] === "" && board[a] === "O" && board[b] === "🎶") {
+      return makeMove(c);
+    }
+  }
+
+  // 2. ¿Puede ganar el jugador humano? (bloquear)
+  for (let combo of winningCombinations) {
+    const [a, b, c] = combo;
+    if (board[a] === "" && board[b] === "X" && board[c] === "💗") {
+      return makeMove(a);
+    }
+    if (board[b] === "" && board[a] === "X" && board[c] === "💗") {
+      return makeMove(b);
+    }
+    if (board[c] === "" && board[a] === "X" && board[b] === "💗") {
+      return makeMove(c);
+    }
+  }
+
+  // 3. Si no, jugar en el centro si está libre
+  if (board[4] === "") return makeMove(4);
+
+  // 4. Si no, jugar al azar en cualquier celda vacía
+  let emptyCells = board
+    .map((val, idx) => (val === "" ? idx : null))
+    .filter((val) => val !== null);
+
+  const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  makeMove(randomIndex);
+}
+
+// Función auxiliar para que el bot haga su jugada
+function makeMove(index) {
+  board[index] = currentPlayer;
+  cells[index].textContent = currentPlayer;
+
+  const winner = checkWinner();
+  if (winner) {
+    endGame(winner);
+    return;
+  }
+
+  currentPlayer = currentPlayer === "💗" ? "🎶" : "💗";
+  updateTurnBox();
+}
+const musica = document.getElementById("musicaFondo");
+
+document.addEventListener("click", () => {
+  musica.play();
+}, { once: true });
+
+
+
+    </script>
+
+  </body>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+ <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url(imagenes/fondocarta2.jpg); 
+      overflow-x: hidden;
+    }
+    .screen {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      flex-direction: column;
+    }
+    .active {
+      display: flex;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .key {
+      background-color: white;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      font-size: 20px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 4px 4px 8px rgba(0,0,0,0.1);
+    }
+    .key:hover {
+      background-color: #f0f0f0;
+      transform: translateY(-3px);
+    }
+    .input-display {
+      font-size: 24px;
+      margin-top: 20px;
+      letter-spacing: 8px;
+    }
+    .notepad {
+      background:white;
+      border: 3px solid #000000;
+      padding: 35px 20px;
+      border-radius: 20px;
+      width: 75%;
+      max-width: 380px;
+      text-align: left;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      line-height: 1.6;
+      box-shadow: 8px 8px 15px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .notepad h3 {
+      margin-top: 0;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .btn {
+      background-color: rgb(115, 161, 97);
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 4px 4px 8px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #dd7bbc;
+      transform: translateY(-2px);
+    }
+    .img-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .img-page img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 15px;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .pin-box input{
+    width:80%;
+    padding:12px;
+    border-radius:15px;
+    border:2px solid #d0b6ff;
+    outline:none;
+    text-align:center;
+    font-size:20px;
+    }
+
+    .btnSiguiente:hover{
+    background-color: #dd7bbc;  
+    transform: translateY(-2px);
+    }
+
+  #btnMusica{
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:60px;
+  height:60px;
+  border:none;
+  border-radius:50%;
+  background:#ff7eb6;
+  color:white;
+  font-size:24px;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.2);
+}
+
+  </style>
+</head>
+<body>
+<!-- Pantalla de contraseña -->
+<div id="passwordScreen" class="screen active">
+  <h2>🔒 Ingresa la contraseña</h2>
+  <div class="input-display" id="inputDisplay">••••</div>
+  <div class="keypad">
+    <button class="key" onclick="enterDigit('1')">1</button>
+    <button class="key" onclick="enterDigit('2')">2</button>
+    <button class="key" onclick="enterDigit('3')">3</button>
+    <button class="key" onclick="enterDigit('4')">4</button>
+    <button class="key" onclick="enterDigit('5')">5</button>
+    <button class="key" onclick="enterDigit('6')">6</button>
+    <button class="key" onclick="enterDigit('7')">7</button>
+    <button class="key" onclick="enterDigit('8')">8</button>
+    <button class="key" onclick="enterDigit('9')">9</button>
+    <button class="key" onclick="checkPassword()">✔</button>
+    <button class="key" onclick="enterDigit('0')">0</button>
+    <button class="key" onclick="deleteLast()">⌫</button>
+  </div>
+  <audio>
+    <source src="audio/destello.mp3" type="audio/mpeg">
+  <audio id="musica" src="audio/destello.mp3"></audio>
+</div>
+<div id="notepadScreen" class="screen">
+  <div class="notepad" id="page1">
+    <h3>📅 ¿Si recordamos como nos Reencontramos?</h3>
+    <h4>💌 💗💚Inicio💗💚</h4>
+    <p>
+       Como no olvidar la primera vez que salimos, no te miento estaba nerviosa imaginando de que hablariamos, si es que volveriamos a repetir nuestra salida hasta que llegaste 
+       recuerdo haberte visto y me dije a mi misma "uuyyy que guapoo" y cuando al fin pudimos interactuar 
+       <br> </br>
+       senti que conectamos desde el momento uno y ya luego desde 
+       ese dia no pare de pensarte, recuerdo nuestro inicio lo siento como la musica 
+       que teletransporta. 
+        
+    </p>
+    <p>
+     O recuerdas la tercera date, cuando fuimos a la foca y luego al mirador del laucho y te tome la mano por primera vez, como que hay una canción 
+     que me devuelve a ese momento.
+    </p>
+    <p>
+      Gracias por aparecer en mi vida, 
+      Gracias por permitirte compartir nuestras vidas y complementarnos
+    <p>
+      ♡♡ Te Amo Más Que Mi Alma ♡♡
+    </p>
+    <div class="btn-container">
+      <button class="btn" onclick="goBack()">⬅ Inicio</button>
+      <button class="btn" onclick="nextPage(2)">➡ Siguiente</button>
+    </div>
+  </div>
+  <div class="notepad" id="page2" style="display:none; text-align:center;">
+    <img src="imagenes/postpega.jpeg" alt="Foto especial" style="width:90%; max-width:350px; border-radius:15px; box-shadow:4px 4px 10px rgba(0,0,0,0.2); margin-bottom:15px;">
+    <p style="text-align:justify;">
+      Agradezco tanto a Dios al universo por habernos juntado, Gracias por llegar a complementarme o mejor dicho ambos nos complementamos lo que a mi me falta tú lo tienes. Gracias por siempre estar, por quedarte, por quererme, por esos momentos en que nos abrimos Te amo Muchisimo 💗💚 .
+    </p>
+    <div class="btn-container">
+      <button class="btn" onclick="prevPage(1)">⬅ Anterior</button>
+      <button class="btn" onclick="nextPage(3)">➡ Siguiente</button>
+    </div>
+  </div>
+<div class="notepad" id="page3" style="display:none; text-align:center;">
+  <h4>📸 Nuestros recuerdos</h4>
+  <div class="carousel">
+    <div class="carousel-track" id="carouselTrack">
+      <img src="imagenes/enamorada.jpg" alt="Recuerdo 1">
+      <img src="imagenes/poquito.jpeg" alt="Recuerdo 2">
+      <img src="imagenes/amoooor.JPG" alt="Recuerdo 3">
+      <img src="imagenes/mioooooooooooo.JPG" alt="Recuerdo 4">
+    </div>
+    <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
+  </div>
+  <div class="btn-container">
+    <button class="btn" onclick="prevPage(2)">⬅ Anterior</button>
+    <button class="btn" onclick="goBack()">⬅ Inicio</button>
+  </div>
+   <a href="corazon.html" id="btnSiguiente" class="boton-siguiente">Ver💚</a>
+</div>
+<style>
+.carousel {
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  margin: 70px auto 20px auto;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.6s ease-in-out;
+  width: 100%;
+}
+.carousel-track img {
+  width: 100%;
+  max-height: 500px;
+  border-radius: 15px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.5);
+  color: rgb(224, 230, 224);
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 50%;
+}
+.carousel-btn:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+
+.boton-siguiente{
+    margin: 15px 0 30px;
+  background: #629b62;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: rgb(245, 245, 245);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+</style>
+<script>
+let currentSlide = 0;
+function moveSlide(direction) {
+  const track = document.getElementById('carouselTrack');
+  const slides = track.children.length;
+  currentSlide += direction;
+  if (currentSlide < 0) currentSlide = slides - 1;
+  if (currentSlide >= slides) currentSlide = 0;
+  track.style.transform = `translateX(-${currentSlide * 100}%)`;
+}
+</script>
+</div>
+<script>
+  const correctPassword = '1605';
+  let input = '';
+  function enterDigit(digit) {
+    if (input.length < 4) {
+      input += digit;
+      updateDisplay();
+    }
+  }
+  function deleteLast() {
+    input = input.slice(0, -1);
+    updateDisplay();
+  }
+  function updateDisplay() {
+    document.getElementById('inputDisplay').textContent = input.padEnd(4, '•');
+  }
+  function checkPassword() {
+    if (input.length === 4) {
+      if (input === correctPassword) {
+        document.getElementById('passwordScreen').classList.remove('active');
+        document.getElementById('notepadScreen').classList.add('active');
+        document.getElementById("musica").play();
+        showPage(1);
+      } else {
+        alert('Contraseña incorrecta, intenta de nuevo');
+        input = '';
+        updateDisplay();
+      }
+    } else {
+      alert('Debes ingresar los 4 dígitos.');
+    }
+  }
+  function goBack() {
+    document.getElementById('notepadScreen').classList.remove('active');
+    document.getElementById('passwordScreen').classList.add('active');
+    input = '';
+    updateDisplay();
+  }
+  // Control de páginas
+  function showPage(n) {
+    const pages = document.querySelectorAll('.notepad');
+    pages.forEach(p => p.style.display = 'none');
+    document.getElementById('page' + n).style.display = 'block';
+  }
+  function nextPage(n) {
+    showPage(n);
+  }
+  function prevPage(n) {
+    showPage(n);
+  }
+ function toggleMusica(){
+  const musica = document.getElementById("musica");
+
+  if(musica.paused){
+    musica.play();
+  }else{
+    musica.pause();
+
+    document.addEventListener();
+  }
+  
+} 
+</script>
+</body>
+</html>
